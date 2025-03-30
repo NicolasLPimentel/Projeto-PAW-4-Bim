@@ -1,0 +1,35 @@
+const express = require('express');
+const EscolaRoteador = require("./Router/EscolaRoteador");
+const ProfessorRoteador = require("./Router/ProfessorRoteador");
+
+class Servidor {
+    constructor() {
+        this._porta = 80;
+        this._app = express();
+
+        this._app.use(express.json());
+        this._app.use(express.static('View'));
+
+        this._escolaRoteador = new EscolaRoteador();
+        this._professorRoteador = new ProfessorRoteador();
+
+        this.configurarRotas();
+    }
+
+    configurarRotas = () => {
+        this.app.use("/escolas", this._escolaRoteador.criarRotasEscola())
+        this.app.use("/professores", this._professorRoteador.criarRotasProfessor())
+    }
+
+    iniciar = async () => {
+        this.app.listen(this._porta, () => {
+            console.log("API Rodando em http://localhost:" + this._porta + "/");
+        })
+    }
+
+    get app() {
+        return this._app;
+    }
+}
+
+module.exports = Servidor;
